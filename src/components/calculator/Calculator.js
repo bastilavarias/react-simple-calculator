@@ -30,7 +30,8 @@ function Calculator() {
     };
 
     const handleInputButtonEqualsClick = () => {
-        console.log('dfdf');
+        setScreenHistory([...screenHistory, screenValue]);
+        console.log(screenHistory);
     };
 
     return (
