@@ -1,8 +1,11 @@
-import "./Calculator.css";
+import './Calculator.css';
 
-function Screen() {
+function Screen({ value, history }) {
     return (
-        <input className="screen" readOnly value="0" />
+        <div className="screen">
+            <input className="screen-input" readOnly value={value} />
+            <span className="screen-history">{history.join(' ')}</span>
+        </div>
     );
 }
 
