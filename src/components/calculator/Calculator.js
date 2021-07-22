@@ -13,35 +13,45 @@ const operationDictionary = {
 
 function Calculator() {
     const [screenValue, setScreenValue] = useState('');
-    const [screenHistory, setScreenHistory] = useState([]);
+    const [screenHistory, setScreenHistory] = useState('');
+    const [firstNumber, setFirstNumber] = useState(0);
+    const [execOperation, setExecOperation] = useState('');
 
     const handleInputButtonClick = (text) => {
         const hasDecimal = screenValue.split('').includes('.');
         if (Object.values(operationDictionary).includes(text)) return;
         if (text === '.' && hasDecimal) return;
         if (screenValue.length >= 9) return;
-        setScreenValue(screenValue + text);
+        setScreenValue(screenValue + text || 0);
     };
 
     const handleInputButtonOperationClick = (operation) => {
         if (screenValue.length === 0) return;
-        setScreenHistory([...screenHistory, screenValue, operation]);
+        const firstNum = parseFloat(screenValue);
+        setFirstNumber(firstNum);
+        setExecOperation(operation);
+        setScreenHistory(`${firstNum} ${operation}`);
         setScreenValue('');
     };
 
     const handleInputButtonEqualsClick = () => {
-        const history = [...screenHistory, screenValue];
-        const expressionArray =
-            history[history.length - 1] === ''
-                ? history.slice(0, history.length - 2)
-                : history;
-        const expression = expressionArray
-            .join('')
-            .replace('×', '*')
-            .replace('÷', '/');
-        // eslint-disable-next-line no-eval
-        const result = eval(expression).toFixed(2);
+        const secondNumber = parseFloat(screenValue) || 0;
+        let result = firstNumber + secondNumber;
+        if (execOperation === '-') result = firstNumber - secondNumber;
+        if (execOperation === '×') result = firstNumber * secondNumber;
+        if (execOperation === '÷') result = firstNumber / secondNumber;
+        result = result.toFixed(2);
+        result = result.toString().includes('.00') ? parseInt(result) : result;
         setScreenValue(result);
+        setScreenHistory(
+            `${firstNumber} ${execOperation} ${secondNumber} = ${result}`
+        );
+    };
+
+    const handleInputButtonClearClick = () => {
+        setFirstNumber(0);
+        setScreenHistory('');
+        setScreenValue('');
     };
 
     return (
@@ -152,7 +162,12 @@ function Calculator() {
                 />
             </div>
             <div className="footer-row">
-                <InputButton type="secondary" text="C" specifier="clear" />
+                <InputButton
+                    type="secondary"
+                    text="C"
+                    specifier="clear"
+                    onClick={handleInputButtonClearClick}
+                />
                 <InputButton
                     type="primary"
                     text={operationDictionary.equals}

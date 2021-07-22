@@ -25,6 +25,10 @@
     outline: 1px solid #888888;
 }
 
+.screen-input::placeholder {
+    color: white;
+}
+
 .screen-history {
     position: absolute;
     top: 10%;
