@@ -30,8 +30,18 @@ function Calculator() {
     };
 
     const handleInputButtonEqualsClick = () => {
-        setScreenHistory([...screenHistory, screenValue]);
-        console.log(screenHistory);
+        const history = [...screenHistory, screenValue];
+        const expressionArray =
+            history[history.length - 1] === ''
+                ? history.slice(0, history.length - 2)
+                : history;
+        const expression = expressionArray
+            .join('')
+            .replace('×', '*')
+            .replace('÷', '/');
+        // eslint-disable-next-line no-eval
+        const result = eval(expression).toFixed(2);
+        setScreenValue(result);
     };
 
     return (
@@ -103,7 +113,7 @@ function Calculator() {
                 <InputButton
                     type="primary"
                     text="3"
-                    onClick={() => handleInputButtonClick('2')}
+                    onClick={() => handleInputButtonClick('3')}
                 />
                 <InputButton
                     type="secondary"
